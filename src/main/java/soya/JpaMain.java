@@ -67,20 +67,20 @@ public class JpaMain {
              * - distinct 로 중복 제거
              *
              */
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setAge(10);
-            em.persist(member);
-
-            em.flush();
-            em.clear();
-
-            // 조인 쿼리가 나감.
-            List<Team> teams = em.createQuery("select t from Member m join m.team t", Team.class).getResultList();
-            System.out.println("teams = " + teams);
-
-            List<Address> addresses = em.createQuery("select o.address from Order o", Address.class).getResultList();
-            System.out.println("addresses = " + addresses);
+//            Member member = new Member();
+//            member.setUsername("member1");
+//            member.setAge(10);
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
+//
+//            // 조인 쿼리가 나감.
+//            List<Team> teams = em.createQuery("select t from Member m join m.team t", Team.class).getResultList();
+//            System.out.println("teams = " + teams);
+//
+//            List<Address> addresses = em.createQuery("select o.address from Order o", Address.class).getResultList();
+//            System.out.println("addresses = " + addresses);
 
             /**
              * 프로젝션 - 여러 값 조회 방법 3가지
@@ -95,15 +95,53 @@ public class JpaMain {
              *
              */
 
-            List<MemberDTO> resultList = em.createQuery("select new soya.domain.MemberDTO(m.username, m.age) from Member m", MemberDTO.class).getResultList();
-            MemberDTO memberDTO = resultList.get(0);
-
-            System.out.println("memberDTO.getName() = " + memberDTO.getName());
-            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
+//            List<MemberDTO> resultList = em.createQuery("select new soya.domain.MemberDTO(m.username, m.age) from Member m", MemberDTO.class).getResultList();
+//            MemberDTO memberDTO = resultList.get(0);
+//
+//            System.out.println("memberDTO.getName() = " + memberDTO.getName());
+//            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
 
             /**
+             * 페이징 API
+             * - jpa는 페이징을 다음 두 api로 추상화
+             * setFirstResult(int startPosition) : 조회 시작 위치
+             * setMaxResults(int maxResult) : 조회할 데이터 수
+             */
+
+//            for (int i = 0; i < 100; i++) {
+//                Member member = new Member();
+//                member.setUsername("member"+ i);
+//                member.setAge(i);
+//                em.persist(member);
+//            }
+//
+//            em.flush();
+//            em.clear();
+//
+//            List<Member> resultList = em.createQuery("select m from Member m order by m.age desc", Member.class)
+//                    .setFirstResult(1)
+//                    .setMaxResults(10)
+//                    .getResultList();
+//
+//            System.out.println("resultList.size() = " + resultList.size());
+//            for (Member member1 : resultList) {
+//                System.out.println("member1 = " + member1);
+//            }
+
+            /**
+             * 조인
              *
              */
+
+
+
+
+
+
+
+
+
+
 
 
             ts.commit();
