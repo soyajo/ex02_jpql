@@ -131,18 +131,38 @@ public class JpaMain {
             /**
              * 조인
              *
+             * 세타조인 - 연관관계가 없는 조인
+             * ex) select count(m) from Member m , Team t where m.username = t.name
+             *
+             * on 절을 활용한 조인(jpa 2.1부터 지원)
+             * 1. 조인 대상 필터링
+             * 2. 연관관계 없는 엔티티 외부 조인(하이버네이트 5.1부터)
+             *
+             *
              */
+            Team team = new Team("teamA");
+            em.persist(team);
 
+            Member member = new Member("member1", 10);
+            member.setTeam(team);
+            em.persist(member);
 
+            em.flush();
+            em.clear();
 
+            // 내부 조인
+            String query1 = "select m from Member m inner join m.team t";
+            // 외부 조인
+            String query2 = "select m from Member m left join m.team t";
+            // 세타 조인
+            String query3 = "select m from Member m, Team t where m.username = t.name";
+            // on절 - 조인 대상 필터링
+            String query4 = "select m from Member m left join m.team t on t.name = 'A' ";
+            // on절 - 연관관계 없는 엔티티 외부 조인(하이버네이트 5.1부터)
+            String query5 = "select m from Member m, Team t on m.username = t.name";
 
-
-
-
-
-
-
-
+            List<Member> resultList = em.createQuery(query3, Member.class)
+                    .getResultList();
 
             ts.commit();
 

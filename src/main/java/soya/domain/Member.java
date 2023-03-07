@@ -17,6 +17,11 @@ public class Member {
     private Team team;
 
 
+    public void changTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
+    }
+
     public Member() {
     }
 
