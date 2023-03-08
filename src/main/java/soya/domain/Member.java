@@ -16,6 +16,9 @@ public class Member {
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
+
 
     public void changTeam(Team team) {
         this.team = team;
@@ -37,6 +40,14 @@ public class Member {
                 ", username='" + username + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    public MemberType getType() {
+        return type;
+    }
+
+    public void setType(MemberType type) {
+        this.type = type;
     }
 
     public Team getTeam() {

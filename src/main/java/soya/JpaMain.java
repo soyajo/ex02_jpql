@@ -4,6 +4,7 @@ package soya;
 import soya.domain.*;
 
 import javax.persistence.*;
+import java.awt.print.Book;
 import java.util.List;
 
 
@@ -140,29 +141,183 @@ public class JpaMain {
              *
              *
              */
+//            Team team = new Team("teamA");
+//            em.persist(team);
+//
+//            Member member = new Member("member1", 10);
+//            member.setTeam(team);
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
+//
+//            // 내부 조인
+//            String query1 = "select m from Member m inner join m.team t";
+//            // 외부 조인
+//            String query2 = "select m from Member m left join m.team t";
+//            // 세타 조인
+//            String query3 = "select m from Member m, Team t where m.username = t.name";
+//            // on절 - 조인 대상 필터링
+//            String query4 = "select m from Member m left join m.team t on t.name = 'A' ";
+//            // on절 - 연관관계 없는 엔티티 외부 조인(하이버네이트 5.1부터)
+//            String query5 = "select m from Member m join Team t on m.username = t.name";
+//
+//            List<Member> resultList = em.createQuery(query5, Member.class)
+//                    .getResultList();
+            /**
+             * 서브쿼리
+             *
+             * 지원함수
+             * - [NOT] EXISTS : 서브쿼리에 결과가 존재하면 참
+             * - ALL 모두 만족하면 참
+             * - ANY, SOME : 같은 의미, 조건을 하나라도 만족하면 참
+             * - [NOT] IN : 서브쿼리의 결과 중 하나라도 같은 것이 있으면 참
+             *
+             * 팀A 소속인 회원
+             * select m from Member m
+             * where exists (select t from m.team t where t.name = '팀A')
+             *
+             * 전체 상품 가각의 재고보다 주문량이 많은 주문들
+             * select o from order o
+             * where o.orderAmount > ALL (select p.stockAmount from Product p)
+             *
+             * 어떤 팀이든 팀에 소속된 회원
+             * select m from Member m
+             * where m.team = ANY (select t from Team t)
+             *
+             * jpa 서브 쿼리 한계
+             * - jpa는 where, having 절에서만 서브 쿼리 가능
+             * - select 절도 가능(하이버네이트에서 지원)
+             * - from 절의 서브 쿼리는 현재 jpql에서 불가능!! (중요)
+             * - 조인으로 풀 수 있으면 풀어서 해결
+             *
+             */
+
+//            Team team = new Team("teamA");
+//            em.persist(team);
+//
+//            Member member = new Member("member1", 10);
+//            member.setTeam(team);
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
+//
+//            // select 절에 서브 쿼리
+//            String query1 = "select (select avg(m1.age) from Member m1) as avgAge from Member m join Team t on m.username = t.name";
+//
+//            List<Member> resultList = em.createQuery(query1, Member.class)
+//                    .getResultList();
+
+            /**
+             * jpql 타입 표현
+             * - 문자 : 'hello', 'she'
+             * - 숫자 : 10L(Long), 10D(Double), 10F(Float)
+             * - Boolean : TRUE, FALSE
+             * - ENUM : jpabook.MemberType.Admin(패키지명 포함) - setParameter()로 처리하면 됨.
+             * - 엔티티 타입 : TYPE(m) = Member (상속 관계에서 사용)
+             */
+
+//            Team team = new Team("teamA");
+//            em.persist(team);
+//
+//            Member member = new Member("member1", 10);
+//            member.setType(MemberType.ADMIN);
+//            member.setTeam(team);
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
+//
+//            // select 절에 서브 쿼리
+//            String query1 = "select m.username, 'Hello', TRUE from Member m where m.type = :userType";
+//
+//            List<Object[]> resultList = em.createQuery(query1)
+//                    .setParameter("userType", MemberType.ADMIN)
+//                    .getResultList();
+//            for (Object[] objects : resultList) {
+//                System.out.println("objects[0] = " + objects[0]);
+//                System.out.println("objects[1] = " + objects[1]);
+//                System.out.println("objects[2] = " + objects[2]);
+//            }
+
+            /**
+             * 조건식 - case 식
+             *
+             */
+//            Team team = new Team("teamA");
+//            em.persist(team);
+//
+//            Member member = new Member("관리자", 10);
+//            member.setType(MemberType.ADMIN);
+//            member.setTeam(team);
+//            em.persist(member);
+//
+//            em.flush();
+//            em.clear();
+//
+//            String query1 = "select  " +
+//                                "case when m.age <= 10 then '학생요금'" +
+//                                "     when m.age >= 60 then '경로요금'" +
+//                                "     else '학생요금' " +
+//                                "end " +
+//                            "from Member m ";
+//            // 이름이 널이면 이름 없는 회원 반환
+//            String query2 = "select coalesce(m.username, '이름 없는 회원') as username from Member m";
+//            // 관리자면 null 을 반환
+//            String query3 = "select nullif(m.username, '관리자') as username from Member m";
+//
+//            List<String> resultList = em.createQuery(query3, String.class).getResultList();
+//            for (String s : resultList) {
+//                System.out.println("s = " + s);
+//            }
+
+            /**
+             * jpql 기본 함수
+             * - concat
+             * - substring
+             * - trim
+             * - lower, upper
+             * - length
+             * - locate
+             * - abs, sqrt,mod
+             * - size, index(jpa 용도)
+             *
+             * 사용자 정의 함수
+             * - 하이버네이트는 사용전 방언에 추가해야 한다.
+             * - 사용하는 db방언을 상속받고, 사용자 정의 함수를 등록한다.
+             * select function('group_concat', i.name) from Item i
+             */
             Team team = new Team("teamA");
             em.persist(team);
 
-            Member member = new Member("member1", 10);
+            Member member = new Member("관리자1", 10);
+            member.setType(MemberType.ADMIN);
             member.setTeam(team);
             em.persist(member);
+
+            Member member1 = new Member("관리자2", 10);
+            member1.setType(MemberType.ADMIN);
+            member1.setTeam(team);
+            em.persist(member1);
 
             em.flush();
             em.clear();
 
-            // 내부 조인
-            String query1 = "select m from Member m inner join m.team t";
-            // 외부 조인
-            String query2 = "select m from Member m left join m.team t";
-            // 세타 조인
-            String query3 = "select m from Member m, Team t where m.username = t.name";
-            // on절 - 조인 대상 필터링
-            String query4 = "select m from Member m left join m.team t on t.name = 'A' ";
-            // on절 - 연관관계 없는 엔티티 외부 조인(하이버네이트 5.1부터)
-            String query5 = "select m from Member m, Team t on m.username = t.name";
+            String query1 = "select concat('a' ,'b') as username from Member m";
+            // 문자길이수
+            String query2 = "select locate('de' ,'abcdeqf') from Member m";
+            // 사용자 정의 함수
+            // dialect 파일 생성 후 설정 -> persistence.xml 파일 수정
+            String query3 = "select function('group_concat', m.username) from Member m";
 
-            List<Member> resultList = em.createQuery(query3, Member.class)
-                    .getResultList();
+            List<String> resultList = em.createQuery(query3, String.class).getResultList();
+            for (String s : resultList) {
+                System.out.println("s = " + s);
+            }
+
+
+
 
             ts.commit();
 
@@ -170,6 +325,7 @@ public class JpaMain {
             e.printStackTrace();
             ts.rollback();
         }
+
 
         em.close();
 
