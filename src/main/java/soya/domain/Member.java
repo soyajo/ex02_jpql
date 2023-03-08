@@ -3,6 +3,14 @@ package soya.domain;
 import javax.persistence.*;
 
 @Entity
+/**
+ * named 쿼리
+ *
+ */
+@NamedQuery(
+        name = "Member.findByUsername",
+        query = "select m from Member m where m.username = :username"
+)
 public class Member {
     @Id
     @GeneratedValue
