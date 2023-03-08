@@ -390,16 +390,19 @@ public class JpaMain {
 
             Member member1 = new Member();
             member1.setUsername("member1");
+            member1.setAge(0);
             member1.setTeam(teamA);
             em.persist(member1);
 
             Member member2 = new Member();
             member2.setUsername("member2");
+            member1.setAge(0);
             member2.setTeam(teamA);
             em.persist(member2);
 
             Member member3 = new Member();
             member3.setUsername("member3");
+            member1.setAge(0);
             member3.setTeam(teamB);
             em.persist(member3);
 
@@ -525,11 +528,25 @@ public class JpaMain {
              *  2. 상품 엔티티의 가격을 10% 증가한다.
              *  3. 트랜잭션 커밋 시점에 변경감지가 동작한다.
              * - 변경된 데이터가 100건이라면 100번의 update sql 실행
+             *
+             * 벌크 연산 주의
+             * - 벌크 연산은 영속성 컨텍스트를 무시하고 데이터베이스에 직접 쿼리 !!
+             * 벌크 연산을 먼저 실행
+             * 벌크 연산 수행 후 영속성 컨텍스트 초기화 !!
              */
 
             int resultCount = em.createQuery("update Member m set m.age = 20")
                     .executeUpdate();
+            em.clear();
+
+            // 디비에 조회.
+            Member member = em.find(Member.class, member1.getId());
+
+            System.out.println("member = " + member);
             System.out.println("resultCount = " + resultCount);
+
+
+
 
             ts.commit();
 
